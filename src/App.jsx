@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import CadastroUsuarios from './pages/CadastroUsuarios';
@@ -19,7 +19,7 @@ function Layout({ children }) {
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Toaster position="top-right" richColors />
       <Routes>
         <Route path="/" element={<Navigate to="/login" />} />
@@ -45,7 +45,7 @@ function App() {
         {/* Placeholder routes for future modules */}
         <Route path="*" element={<Navigate to="/dashboard" />} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
