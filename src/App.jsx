@@ -3,6 +3,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import CadastroUsuarios from './pages/CadastroUsuarios';
 import EnvioDocumentos from './pages/EnvioDocumentos';
+import Documentos from './pages/Documentos';
 import Header from './pages/Header';
 import MobileBackButton from './components/MobileBackButton';
 import { Toaster } from 'sonner';

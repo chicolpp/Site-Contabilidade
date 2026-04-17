@@ -288,6 +288,32 @@ def upload_documento():
         db.session.rollback()
         return {"error": f"Erro ao enviar documento: {str(e)}"}, 500
 
+@app.route("/api/documentos", methods=["GET"])
+def listar_documentos():
+    try:
+        cliente_id = request.args.get("cliente_id")
+        is_admin = request.args.get("is_admin", "false").lower() == "true"
+        
+        if is_admin:
+            documentos = Documento.query.order_by(Documento.data_upload.desc()).all()
+        elif cliente_id:
+            documentos = Documento.query.filter_by(cliente_id=cliente_id).order_by(Documento.data_upload.desc()).all()
+        else:
+            return {"error": "Acesso negado ou cliente_id não fornecido"}, 403
+            
+        # Incluir nome do cliente para o admin
+        result = []
+        for d in documentos:
+            d_dict = d.to_dict()
+            cliente = User.query.get(d.cliente_id)
+            if cliente:
+                d_dict["cliente_nome"] = cliente.nome_fantasia || f"{cliente.nome} {cliente.sobrenome}"
+            result.append(d_dict)
+            
+        return {"documentos": result}
+    except Exception as e:
+        return {"error": f"Erro ao listar documentos: {str(e)}"}, 500
+
 # Servir frontend React de forma manual e robusta
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
