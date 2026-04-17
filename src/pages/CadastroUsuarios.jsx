@@ -1249,7 +1249,6 @@ export default function CadastroUsuarios() {
                 )}
                 </div>
               </div>
-            </div>
 
             {/* Linha Email + Cargo */}
             <div className="form-row-2">
