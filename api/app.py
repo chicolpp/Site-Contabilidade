@@ -7,7 +7,7 @@ import jwt
 import datetime
 import os
 import base64
-from whitenoise import WhiteNoise
+import mimetypes
 
 def allowed_file(filename):
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
@@ -40,10 +40,6 @@ STATIC_FOLDER = os.path.join(STATIC_ROOT, 'dist')
 
 app = Flask(__name__)
 CORS(app)
-
-# Configura o WhiteNoise para servir a pasta dist
-# Ele vai interceptar pedidos para arquivos físicos (js, css, png) automaticamente
-app.wsgi_app = WhiteNoise(app.wsgi_app, root=STATIC_FOLDER, index_file=True)
 
 # Configuração de Banco de Dados (Suporte ao Render/Postgres)
 db_url = os.environ.get("DATABASE_URL")
@@ -209,13 +205,46 @@ def toggle_status_usuario(id):
     db.session.commit()
     return {"message": "Status alterado", "user": user.to_dict()}, 200
 
-# Servir frontend React (SPA Fallback)
+# Servir frontend React de forma manual e robusta
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve(path):
-    # Se o Flask chegou aqui, é porque não é uma rota de API e o WhiteNoise 
-    # não achou um arquivo físico. Então mandamos o index.html para o React.
-    return send_from_directory(STATIC_FOLDER, 'index.html')
+    # API endpoints começam com /api/, não devem cair aqui se as rotas acima estiverem corretas
+    # Mas por segurança, se o Flask chegou aqui, tentamos servir o arquivo físico ou o index.html
+    
+    if not path or path == '/':
+        filename = 'index.html'
+    else:
+        filename = path
+        
+    full_path = os.path.join(STATIC_FOLDER, filename)
+    
+    # Se o arquivo não existir ou for uma pasta, servimos o index.html (SPA Fallback)
+    if not os.path.exists(full_path) or os.path.isdir(full_path):
+        full_path = os.path.join(STATIC_FOLDER, 'index.html')
+        filename = 'index.html'
+
+    try:
+        if not os.path.exists(full_path):
+            return "Página não encontrada", 404
+            
+        size = os.path.getsize(full_path)
+        mime_type, _ = mimetypes.guess_type(full_path)
+        
+        # Log de diagnóstico para o painel do Render
+        print(f"[MANUAL SERVE] Arquivo: {filename} | Tamanho: {size} bytes | MIME: {mime_type}")
+        
+        # Leitura binária direta para evitar qualquer bug de streaming/sendfile do SO
+        with open(full_path, 'rb') as f:
+            content = f.read()
+            
+        return content, 200, {
+            'Content-Type': mime_type or 'application/octet-stream',
+            'Content-Length': str(len(content))
+        }
+    except Exception as e:
+        print(f"[ERR] Falha ao servir {filename}: {str(e)}")
+        return "Erro interno do servidor ao carregar arquivo estático", 500
 
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
