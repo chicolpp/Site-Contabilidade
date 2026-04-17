@@ -115,6 +115,19 @@ export default function Dashboard() {
       <h1>Painel de Controle</h1>
       <p>Bem-vindo ao Sistema de Contabilidade</p>
 
+      {isAdmin && (
+        <div className="dashboard-section">
+          <h2 className="section-title">Área de Envio de Documentos</h2>
+          <div className="dashboard-grid">
+            <ActionCard 
+              image={docImg} 
+              label="Envio de Documentos" 
+              onClick={() => navigate("/envio-documentos")} 
+            />
+          </div>
+        </div>
+      )}
+
       {showContador && (
         <div className="dashboard-section">
           <h2 className="section-title">Módulo Contábil</h2>

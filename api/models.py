@@ -54,3 +54,31 @@ class User(db.Model):
             "data_criacao": self.data_criacao.isoformat() if self.data_criacao else "",
             "ultimo_acesso": self.ultimo_acesso.isoformat() if self.ultimo_acesso else "",
         }
+
+class Documento(db.Model):
+    __tablename__ = "documentos"
+
+    id = db.Column(db.Integer, primary_key=True)
+    cliente_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    setor = db.Column(db.String(50), nullable=False)
+    tipo_documento = db.Column(db.String(100), nullable=False)
+    competencia = db.Column(db.String(20), nullable=False) # Formato YYYY-MM
+    titulo = db.Column(db.String(200), nullable=False)
+    descricao = db.Column(db.Text, nullable=True)
+    arquivo = db.Column(db.Text, nullable=False) # Armazenado como Base64
+    extensao = db.Column(db.String(10), nullable=True) # pdf, docx, png, etc
+    data_upload = db.Column(db.DateTime, default=db.func.now())
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "cliente_id": self.cliente_id,
+            "setor": self.setor,
+            "tipo_documento": self.tipo_documento,
+            "competencia": self.competencia,
+            "titulo": self.titulo,
+            "descricao": self.descricao or "",
+            "arquivo": self.arquivo,
+            "extensao": self.extensao,
+            "data_upload": self.data_upload.isoformat() if self.data_upload else ""
+        }

@@ -2,6 +2,7 @@ import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import CadastroUsuarios from './pages/CadastroUsuarios';
+import EnvioDocumentos from './pages/EnvioDocumentos';
 import Header from './pages/Header';
 import { Toaster } from 'sonner';
 import './App.css';
@@ -38,6 +39,14 @@ function App() {
           element={
             <Layout>
               <CadastroUsuarios />
+            </Layout>
+          } 
+        />
+        <Route 
+          path="/envio-documentos" 
+          element={
+            <Layout>
+              <EnvioDocumentos />
             </Layout>
           } 
         />

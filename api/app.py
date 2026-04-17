@@ -1,7 +1,7 @@
 from flask import Flask, request, send_from_directory
 from flask_cors import CORS
 from database import db
-from models import User
+from models import User, Documento
 from sqlalchemy import text
 from werkzeug.utils import secure_filename
 import jwt
@@ -248,6 +248,45 @@ def toggle_status_usuario(id):
     user.ativo = not user.ativo
     db.session.commit()
     return {"message": "Status alterado", "user": user.to_dict()}, 200
+
+@app.route("/api/usuarios/clientes", methods=["GET"])
+def listar_clientes():
+    try:
+        clientes = User.query.filter_by(cargo="cliente").all()
+        return {"clientes": [{"id": c.id, "nome": c.nome, "sobrenome": c.sobrenome, "nome_fantasia": c.nome_fantasia} for c in clientes]}
+    except Exception as e:
+        return {"error": f"Erro ao listar clientes: {str(e)}"}, 500
+
+@app.route("/api/documentos", methods=["POST"])
+def upload_documento():
+    try:
+        data = request.json
+        if not data:
+            return {"error": "Dados não fornecidos"}, 400
+            
+        required = ["cliente_id", "setor", "tipo_documento", "competencia", "titulo", "arquivo"]
+        for field in required:
+            if not data.get(field):
+                return {"error": f"Campo {field} é obrigatório"}, 400
+                
+        doc = Documento(
+            cliente_id=data["cliente_id"],
+            setor=data["setor"],
+            tipo_documento=data["tipo_documento"],
+            competencia=data["competencia"],
+            titulo=data["titulo"],
+            descricao=data.get("descricao", ""),
+            arquivo=data["arquivo"],
+            extensao=data.get("extensao", "pdf")
+        )
+        
+        db.session.add(doc)
+        db.session.commit()
+        
+        return {"message": "Documento enviado com sucesso", "documento": doc.to_dict()}, 201
+    except Exception as e:
+        db.session.rollback()
+        return {"error": f"Erro ao enviar documento: {str(e)}"}, 500
 
 # Servir frontend React de forma manual e robusta
 @app.route('/', defaults={'path': ''})
