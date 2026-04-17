@@ -14,6 +14,15 @@ class User(db.Model):
     is_admin = db.Column(db.Boolean, default=False)
     ativo = db.Column(db.Boolean, default=True)
     documento = db.Column(db.String(20), nullable=True)
+    
+    # Novos campos para cargo 'cliente'
+    tipo_pessoa = db.Column(db.String(2), nullable=True) # PF ou PJ
+    ie = db.Column(db.String(20), nullable=True)
+    im = db.Column(db.String(20), nullable=True)
+    data_abertura = db.Column(db.String(20), nullable=True)
+    telefone = db.Column(db.String(20), nullable=True)
+    regime_tributario = db.Column(db.String(50), nullable=True)
+
     data_criacao = db.Column(db.DateTime, default=db.func.now())
     ultimo_acesso = db.Column(db.DateTime, nullable=True)
 
@@ -34,6 +43,12 @@ class User(db.Model):
             "is_admin": self.is_admin,
             "ativo": self.ativo,
             "documento": self.documento or "",
+            "tipo_pessoa": self.tipo_pessoa or "",
+            "ie": self.ie or "",
+            "im": self.im or "",
+            "data_abertura": self.data_abertura or "",
+            "telefone": self.telefone or "",
+            "regime_tributario": self.regime_tributario or "",
             "data_criacao": self.data_criacao.isoformat() if self.data_criacao else "",
             "ultimo_acesso": self.ultimo_acesso.isoformat() if self.ultimo_acesso else "",
         }

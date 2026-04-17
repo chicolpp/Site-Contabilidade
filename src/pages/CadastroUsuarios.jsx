@@ -1,7 +1,13 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import api from "../services/api";
 import { toast } from "sonner";
-import { applyDocumentMask } from "../utils/formatters";
+import { 
+  applyDocumentMask, 
+  applyPhoneMask, 
+  applyIEMask, 
+  applyIMMask, 
+  validateEmail 
+} from "../utils/formatters";
 import "./CadastroUsuarios.css";
 import PremiumSelect from "../components/PremiumSelect";
 
@@ -171,6 +177,14 @@ export default function CadastroUsuarios() {
     documento: "",
     temVeiculo: false,
     veiculos: [],
+
+    // Novos campos cliente
+    tipo_pessoa: "PF",
+    ie: "",
+    im: "",
+    data_abertura: "",
+    telefone: "",
+    regime_tributario: "Simples Nacional",
   });
   const [fotoFile, setFotoFile] = useState(null);
   const [fotoPreview, setFotoPreview] = useState(null);
@@ -184,6 +198,14 @@ export default function CadastroUsuarios() {
     ativo: true,
     
     documento: "",
+    
+    // Novos campos cliente
+    tipo_pessoa: "",
+    ie: "",
+    im: "",
+    data_abertura: "",
+    telefone: "",
+    regime_tributario: "",
   });
   const [editFotoFile, setEditFotoFile] = useState(null);
   const [editFotoPreview, setEditFotoPreview] = useState(null);
@@ -245,11 +267,24 @@ export default function CadastroUsuarios() {
       finalValue = applyDocumentMask(finalValue, docType);
     }
     
-    setFormData((prev) => {
       const newData = {
         ...prev,
         [name]: finalValue,
       };
+
+      // Máscaras específicas para novos campos
+      if (name === "telefone") newData.telefone = applyPhoneMask(value);
+      if (name === "ie") newData.ie = applyIEMask(value);
+      if (name === "im") newData.im = applyIMMask(value);
+
+      // Sincroniza docType com tipo_pessoa para CLIENTES
+      if (newData.cargo === "cliente") {
+        newData.is_admin = false; // Cliente nunca é admin
+        const currentDocType = newData.tipo_pessoa === "PJ" ? "CNPJ" : "CPF";
+        if (name === "documento" || name === "tipo_pessoa") {
+          newData.documento = applyDocumentMask(newData.documento, currentDocType);
+        }
+      }
 
       // Se mudar para morador, remove admin
       if (name === "cargo" && value === "morador") {
@@ -297,11 +332,24 @@ export default function CadastroUsuarios() {
       finalValue = applyDocumentMask(finalValue, editDocType);
     }
     
-    setEditFormData((prev) => {
       const newData = {
         ...prev,
         [name]: finalValue,
       };
+
+      // Máscaras específicas para novos campos
+      if (name === "telefone") newData.telefone = applyPhoneMask(value);
+      if (name === "ie") newData.ie = applyIEMask(value);
+      if (name === "im") newData.im = applyIMMask(value);
+
+      // Sincroniza docType com tipo_pessoa para CLIENTES
+      if (newData.cargo === "cliente") {
+        newData.is_admin = false; // Cliente nunca é admin
+        const currentDocType = newData.tipo_pessoa === "PJ" ? "CNPJ" : "CPF";
+        if (name === "documento" || name === "tipo_pessoa") {
+          newData.documento = applyDocumentMask(newData.documento, currentDocType);
+        }
+      }
 
       // Se mudar para morador, remove admin
       if (name === "cargo" && value === "morador") {
@@ -432,6 +480,13 @@ export default function CadastroUsuarios() {
       return;
     }
 
+    // Validações adicionais para CLIENTE
+    if (formData.cargo === "cliente") {
+      if (!validateEmail(formData.email)) return toast.error("E-mail inválido.");
+      if (formData.telefone && formData.telefone.length < 14) return toast.error("Telefone completo é obrigatório.");
+      if (!formData.data_abertura) return toast.error("Data de abertura é obrigatória.");
+    }
+
     setLoading(true);
 
     try {
@@ -450,6 +505,16 @@ export default function CadastroUsuarios() {
         data.append("foto", fotoPreview);
       } else if (fotoFile) {
         data.append("foto", fotoFile);
+      }
+
+      // Novos campos cliente
+      if (formData.cargo === "cliente") {
+        data.append("tipo_pessoa", formData.tipo_pessoa);
+        data.append("ie", formData.ie);
+        data.append("im", formData.im);
+        data.append("data_abertura", formData.data_abertura);
+        data.append("telefone", formData.telefone);
+        data.append("regime_tributario", formData.regime_tributario);
       }
 
       await api.post("/register", data, {
@@ -471,6 +536,12 @@ export default function CadastroUsuarios() {
         documento: "",
         temVeiculo: false,
         veiculos: [],
+        tipo_pessoa: "PF",
+        ie: "",
+        im: "",
+        data_abertura: "",
+        telefone: "",
+        regime_tributario: "Simples Nacional",
       });
       setDocType("RG");
       setFotoFile(null);
@@ -628,6 +699,16 @@ export default function CadastroUsuarios() {
         data.append("foto", editFotoPreview);
       } else if (editFotoFile) {
         data.append("foto", editFotoFile);
+      }
+
+      // Novos campos cliente
+      if (editFormData.cargo === "cliente") {
+        data.append("tipo_pessoa", editFormData.tipo_pessoa);
+        data.append("ie", editFormData.ie);
+        data.append("im", editFormData.im);
+        data.append("data_abertura", editFormData.data_abertura);
+        data.append("telefone", editFormData.telefone);
+        data.append("regime_tributario", editFormData.regime_tributario);
       }
 
       await api.put(`/usuarios/${modalEditar.id}`, data, {
@@ -900,6 +981,89 @@ export default function CadastroUsuarios() {
                 </div>
               )}
 
+              {editFormData.cargo === "cliente" && (
+                <div className="cliente-fiscal-section">
+                  <div className="section-title">Dados Fiscais / Cliente</div>
+                  
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label>Tipo de Pessoa:</label>
+                      <select name="tipo_pessoa" value={editFormData.tipo_pessoa} onChange={handleEditChange} className="premium-select-field">
+                        <option value="PF">Pessoa Física</option>
+                        <option value="PJ">Pessoa Jurídica</option>
+                      </select>
+                    </div>
+                    <div className="form-group">
+                      <label>{editFormData.tipo_pessoa === "PJ" ? "CNPJ:" : "CPF:"}</label>
+                      <input
+                        type="text"
+                        name="documento"
+                        value={editFormData.documento}
+                        onChange={handleEditChange}
+                        placeholder={editFormData.tipo_pessoa === "PJ" ? "00.000.000/0000-00" : "000.000.000-00"}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label>Inscrição Estadual:</label>
+                      <input
+                        type="text"
+                        name="ie"
+                        value={editFormData.ie}
+                        onChange={handleEditChange}
+                        placeholder="Somente números"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Inscrição Municipal:</label>
+                      <input
+                        type="text"
+                        name="im"
+                        value={editFormData.im}
+                        onChange={handleEditChange}
+                        placeholder="Somente números"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label>Data de Abertura / Início:</label>
+                      <input
+                        type="date"
+                        name="data_abertura"
+                        value={editFormData.data_abertura}
+                        onChange={handleEditChange}
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Regime Tributário:</label>
+                      <select name="regime_tributario" value={editFormData.regime_tributario} onChange={handleEditChange} className="premium-select-field">
+                        <option value="Simples Nacional">Simples Nacional</option>
+                        <option value="Lucro Presumido">Lucro Presumido</option>
+                        <option value="Lucro Real">Lucro Real</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label>Telefone de Contato:</label>
+                    <input
+                      type="text"
+                      name="telefone"
+                      value={editFormData.telefone}
+                      onChange={handleEditChange}
+                      placeholder="(00) 00000-0000"
+                      required
+                    />
+                  </div>
+                </div>
+              )}
+
               {editFormData.cargo === "morador" && (
                 <div className="form-group vehicle-checkbox-group">
                   <label>VEÍCULOS</label>
@@ -946,7 +1110,7 @@ export default function CadastroUsuarios() {
               )}
 
               <div className="edit-toggles-row">
-                {editFormData.cargo !== "morador" && (
+                {editFormData.cargo !== "morador" && editFormData.cargo !== "cliente" && (
                   <div className={`edit-toggle-box ${editFormData.is_admin ? "active" : ""}`}>
                     <div className="edit-toggle-info">
                       <span className="edit-toggle-icon">👑</span>
@@ -1251,7 +1415,93 @@ export default function CadastroUsuarios() {
             )}
 
 
-            {formData.cargo !== "morador" && (
+            {formData.cargo === "cliente" && (
+              <div className="cliente-fiscal-section">
+                <div className="section-title">Dados Fiscais / Cliente</div>
+                
+                <div className="form-row-2">
+                  <div className="form-group">
+                    <label>Tipo de Pessoa:</label>
+                    <select name="tipo_pessoa" value={formData.tipo_pessoa} onChange={handleChange} className="premium-select-field">
+                      <option value="PF">Pessoa Física</option>
+                      <option value="PJ">Pessoa Jurídica</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label>{formData.tipo_pessoa === "PJ" ? "CNPJ:" : "CPF:"}</label>
+                    <input
+                      type="text"
+                      name="documento"
+                      value={formData.documento}
+                      onChange={handleChange}
+                      placeholder={formData.tipo_pessoa === "PJ" ? "00.000.000/0000-00" : "000.000.000-00"}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="form-row-2">
+                  <div className="form-group">
+                    <label>Inscrição Estadual:</label>
+                    <input
+                      type="text"
+                      name="ie"
+                      value={formData.ie}
+                      onChange={handleChange}
+                      placeholder="Somente números"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Inscrição Municipal:</label>
+                    <input
+                      type="text"
+                      name="im"
+                      value={formData.im}
+                      onChange={handleChange}
+                      placeholder="Somente números"
+                    />
+                  </div>
+                </div>
+
+                <div className="form-row-2">
+                  <div className="form-group">
+                    <label>Data de Abertura / Início:</label>
+                    <input
+                      type="date"
+                      name="data_abertura"
+                      value={formData.data_abertura}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Regime Tributário:</label>
+                    <select name="regime_tributario" value={formData.regime_tributario} onChange={handleChange} className="premium-select-field">
+                      <option value="Simples Nacional">Simples Nacional</option>
+                      <option value="Lucro Presumido">Lucro Presumido</option>
+                      <option value="Lucro Real">Lucro Real</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Telefone de Contato:</label>
+                    <input
+                      type="text"
+                      name="telefone"
+                      value={formData.telefone}
+                      onChange={handleChange}
+                      placeholder="(00) 00000-0000"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+
+            {formData.cargo !== "morador" && formData.cargo !== "cliente" && (
               <div className="admin-toggle-container">
                 <div className="admin-toggle-box">
                   <div className="admin-toggle-info">

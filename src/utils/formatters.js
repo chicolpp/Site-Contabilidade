@@ -53,23 +53,83 @@ export const formatTime = (timeString) => {
  */
 export const applyDocumentMask = (value, type) => {
     if (!value) return "";
+    let v = value.replace(/\D/g, "");
+
     if (type === "CPF") {
-        let v = value.replace(/\D/g, "").substring(0, 11);
+        v = v.substring(0, 11);
         return v.replace(/(\d{3})(\d)/, "$1.$2")
             .replace(/(\d{3})(\d)/, "$1.$2")
             .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
     }
+    if (type === "CNPJ") {
+        v = v.substring(0, 14);
+        return v.replace(/^(\d{2})(\d)/, "$1.$2")
+            .replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3")
+            .replace(/\.(\d{3})(\d)/, ".$1/$2")
+            .replace(/(\d{4})(\d)/, "$1-$2");
+    }
     if (type === "RG" || type === "RG/CPF") {
-        let v = value.replace(/[^\dXx]/g, "").substring(0, 9);
+        v = value.replace(/[^\dXx]/g, "").substring(0, 9);
         if (v.length > 8) return v.replace(/^(.{2})(.{3})(.{3})(.{1})$/, "$1.$2.$3-$4");
         if (v.length > 5) return v.replace(/^(.{2})(.{3})(.{1,3})$/, "$1.$2.$3");
         if (v.length > 2) return v.replace(/^(.{2})(.{1,3})$/, "$1.$2");
         return v;
     }
     if (type === "CNH") {
-        return value.replace(/\D/g, "").substring(0, 11);
+        return v.substring(0, 11);
     }
     return value.replace(/[^a-zA-Z0-9]/g, "").toUpperCase();
+};
+
+/**
+ * Aplica máscara de telefone (fixo ou celular).
+ * @param {string} value 
+ * @returns {string}
+ */
+export const applyPhoneMask = (value) => {
+    if (!value) return "";
+    let v = value.replace(/\D/g, "");
+    if (v.length > 11) v = v.substring(0, 11);
+
+    if (v.length > 10) {
+        return v.replace(/^(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
+    } else if (v.length > 5) {
+        return v.replace(/^(\d{2})(\d{4})(\d{0,4})/, "($1) $2-$3");
+    } else if (v.length > 2) {
+        return v.replace(/^(\d{2})(\d{0,5})/, "($1) $2");
+    } else {
+        return v.replace(/^(\d*)/, "($1");
+    }
+};
+
+/**
+ * Aplica máscara de Inscrição Estadual (Genérica até 14 dígitos).
+ * @param {string} value 
+ * @returns {string}
+ */
+export const applyIEMask = (value) => {
+    if (!value) return "";
+    return value.replace(/\D/g, "").substring(0, 14);
+};
+
+/**
+ * Aplica máscara de Inscrição Municipal (Genérica até 15 dígitos).
+ * @param {string} value 
+ * @returns {string}
+ */
+export const applyIMMask = (value) => {
+    if (!value) return "";
+    return value.replace(/\D/g, "").substring(0, 15);
+};
+
+/**
+ * Valida se um email é bem formatado.
+ * @param {string} email 
+ * @returns {boolean}
+ */
+export const validateEmail = (email) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
 };
 
 /**

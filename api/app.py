@@ -113,6 +113,14 @@ def register():
         cargo = request.form.get("cargo", "contabilidade")
         is_admin = request.form.get("is_admin", "false").lower() == "true"
         documento = request.form.get("documento", "")
+        
+        # Novos campos cliente
+        tipo_pessoa = request.form.get("tipo_pessoa", "")
+        ie = request.form.get("ie", "")
+        im = request.form.get("im", "")
+        data_abertura = request.form.get("data_abertura", "")
+        telefone = request.form.get("telefone", "")
+        regime_tributario = request.form.get("regime_tributario", "")
 
         if not email or not password:
             return {"error": "Email e senha são obrigatórios"}, 400
@@ -135,6 +143,12 @@ def register():
             foto=foto_base64,
             is_admin=is_admin,
             documento=documento,
+            tipo_pessoa=tipo_pessoa,
+            ie=ie,
+            im=im,
+            data_abertura=data_abertura,
+            telefone=telefone,
+            regime_tributario=regime_tributario,
         )
 
         user.set_password(password)
@@ -162,9 +176,16 @@ def editar_usuario(id):
         user.sobrenome = request.form.get("sobrenome", user.sobrenome)
         user.email = request.form.get("email", user.email)
         user.cargo = request.form.get("cargo", user.cargo)
-        user.is_admin = request.form.get("is_admin", "false").lower() == "true"
-        user.ativo = request.form.get("ativo", "true").lower() == "true"
+        user.is_admin = request.form.get("is_admin", str(user.is_admin)).lower() == "true"
+        user.ativo = request.form.get("ativo", str(user.ativo)).lower() == "true"
         user.documento = request.form.get("documento", user.documento)
+        
+        user.tipo_pessoa = request.form.get("tipo_pessoa", user.tipo_pessoa)
+        user.ie = request.form.get("ie", user.ie)
+        user.im = request.form.get("im", user.im)
+        user.data_abertura = request.form.get("data_abertura", user.data_abertura)
+        user.telefone = request.form.get("telefone", user.telefone)
+        user.regime_tributario = request.form.get("regime_tributario", user.regime_tributario)
         
         if request.form.get("password"):
             user.set_password(request.form.get("password"))
