@@ -80,6 +80,7 @@ def apply_migrations():
             conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS data_abertura VARCHAR(20)"))
             conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS telefone VARCHAR(20)"))
             conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS regime_tributario VARCHAR(50)"))
+            conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS nome_fantasia VARCHAR(255)"))
             conn.commit()
             print("Migrações de colunas aplicadas com sucesso.")
     except Exception as e:
@@ -139,6 +140,7 @@ def register():
         data_abertura = request.form.get("data_abertura", "")
         telefone = request.form.get("telefone", "")
         regime_tributario = request.form.get("regime_tributario", "")
+        nome_fantasia = request.form.get("nome_fantasia", "")
 
         if not email or not password:
             return {"error": "Email e senha são obrigatórios"}, 400
@@ -167,6 +169,7 @@ def register():
             data_abertura=data_abertura,
             telefone=telefone,
             regime_tributario=regime_tributario,
+            nome_fantasia=nome_fantasia,
         )
 
         user.set_password(password)
@@ -204,6 +207,7 @@ def editar_usuario(id):
         user.data_abertura = request.form.get("data_abertura", user.data_abertura)
         user.telefone = request.form.get("telefone", user.telefone)
         user.regime_tributario = request.form.get("regime_tributario", user.regime_tributario)
+        user.nome_fantasia = request.form.get("nome_fantasia", user.nome_fantasia)
         
         if request.form.get("password"):
             user.set_password(request.form.get("password"))

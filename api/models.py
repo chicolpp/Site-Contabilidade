@@ -22,6 +22,7 @@ class User(db.Model):
     data_abertura = db.Column(db.String(20), nullable=True)
     telefone = db.Column(db.String(20), nullable=True)
     regime_tributario = db.Column(db.String(50), nullable=True)
+    nome_fantasia = db.Column(db.String(255), nullable=True)
 
     data_criacao = db.Column(db.DateTime, default=db.func.now())
     ultimo_acesso = db.Column(db.DateTime, nullable=True)
@@ -37,6 +38,7 @@ class User(db.Model):
             "id": self.id,
             "nome": self.nome,
             "sobrenome": self.sobrenome,
+            "nome_fantasia": self.nome_fantasia or "",
             "email": self.email,
             "cargo": self.cargo,
             "foto": self.foto or "",

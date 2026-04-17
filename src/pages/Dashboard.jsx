@@ -31,128 +31,25 @@ export default function Dashboard() {
 
   const UsersIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>;
 
-  const ScalesIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12A10 10 0 0 0 12 2A10 10 0 0 0 22 12"/><path d="M12 2v20"/><line x1="12" y1="22" x2="18" y2="22"/><line x1="6" y1="22" x2="12" y2="22"/><path d="M22 12l-4-4-4 4"/></svg>;  const contadorAreas = [
-    {
-      title: "Área Contábil",
-      icon: <ChartIcon />,
-      actions: [
-        { image: relatorioImg, label: "Upload de Relatórios", onClick: () => navigate("/contabil/upload") },
-        { image: lancamentoImg, label: "Balancetes", onClick: () => navigate("/contabil/balancetes") },
-        { image: docImg, label: "Demonstrativos", onClick: () => navigate("/contabil/demonstrativos") },
-        { image: tributosImg, label: "Histórico Mensal", onClick: () => navigate("/contabil/historico") }
-      ]
-    },
-    {
-      title: "Área Financeira",
-      icon: <DollarIcon />,
-      actions: [
-        { image: docImg, label: "Upload de Boletos", onClick: () => navigate("/financeira/upload") },
-        { image: lancamentoImg, label: "Contas a Pagar", onClick: () => navigate("/financeira/pagar") },
-        { image: lancamentoImg, label: "Contas a Receber", onClick: () => navigate("/financeira/receber") },
-        { image: tributosImg, label: "Fluxo de Caixa", onClick: () => navigate("/financeira/fluxo") }
-      ]
-    },
-    {
-      title: "Área Pessoal",
-      icon: <UsersIcon />,
-      actions: [
-        { image: folhaImg, label: "Upload de Folha", onClick: () => navigate("/pessoal/folha") },
-        { image: relatorioImg, label: "Funcionários", onClick: () => navigate("/pessoal/funcionarios") },
-        { image: tributosImg, label: "Férias", onClick: () => navigate("/pessoal/ferias") },
-        { image: docImg, label: "Documentos Trabalhistas", onClick: () => navigate("/pessoal/documentos") }
-      ]
-    },
-    {
-      title: "Área Fiscal",
-      icon: <FileTextIcon />,
-      actions: [
-        { image: tributosImg, label: "Upload de Impostos", onClick: () => navigate("/fiscal/impostos") },
-        { image: docImg, label: "Guias", onClick: () => navigate("/fiscal/guias") },
-        { image: relatorioImg, label: "Declarações", onClick: () => navigate("/fiscal/declaracoes") },
-        { image: lancamentoImg, label: "Obrigações", onClick: () => navigate("/fiscal/obrigacoes") }
-      ]
-    },
-    {
-      title: "Área Jurídica",
-      icon: <ScalesIcon />,
-      actions: [
-        { image: docImg, label: "Upload de Contratos", onClick: () => navigate("/juridica/upload") },
-        { image: relatorioImg, label: "Contratos / Documentos Legais", onClick: () => navigate("/juridica/contratos") },
-        { image: tributosImg, label: "Prazos / Vencimentos", onClick: () => navigate("/juridica/prazos") },
-        { image: docImg, label: "Documentos Confidenciais", onClick: () => navigate("/juridica/confidenciais") }
-      ]
-    }
-  ];
-  
-  const clienteActions = [
+  const ScalesIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12A10 10 0 0 0 12 2A10 10 0 0 0 22 12"/><path d="M12 2v20"/><line x1="12" y1="22" x2="18" y2="22"/><line x1="6" y1="22" x2="12" y2="22"/><path d="M22 12l-4-4-4 4"/></svg>;  const clienteActions = [
     {
       image: docImg,
-      label: "Notas Fiscais",
-      onClick: () => navigate("/notas")
-    },
-    {
-      image: tributosImg,
-      label: "Guias de Imposto",
-      onClick: () => navigate("/guias")
-    },
-    {
-      image: folhaImg,
       label: "Documentos",
       onClick: () => navigate("/documentos")
-    },
-    {
-      image: relatorioImg,
-      label: "Atendimento",
-      onClick: () => navigate("/atendimento")
     }
   ];
 
-  const showContador = cargo === "contador" || isAdmin;
-  const showCliente = cargo === "cliente" || isAdmin;
+  const canSeeDashboard = cargo === "cliente" || isAdmin;
 
   return (
     <div className="dashboard-container">
       <h1>Painel de Controle</h1>
       <p>Bem-vindo ao Sistema de Contabilidade</p>
 
-      {showContador && (
+      {canSeeDashboard ? (
         <div className="dashboard-section">
-          <h2 className="section-title">Módulo Contábil</h2>
-          
-          {contadorAreas.map((area, idx) => (
-            <div key={idx} style={{ width: "100%", marginBottom: "2.5rem" }}>
-              <h3 style={{ 
-                color: "var(--primary-light)", 
-                marginBottom: "1rem", 
-                fontSize: "1.2rem", 
-                fontWeight: "600",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "flex-start",
-                gap: "8px"
-              }}>
-                {area.icon}
-                {area.title}
-              </h3>
-              <div className="dashboard-grid">
-                {area.actions.map((action, index) => (
-                  <ActionCard
-                    key={index}
-                    image={action.image}
-                    label={action.label}
-                    onClick={action.onClick}
-                  />
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {showCliente && (
-        <div className="dashboard-section">
-          <h2 className="section-title">Módulo do Cliente</h2>
-          <div className="dashboard-grid">
+          <h2 className="section-title">Central do Cliente</h2>
+          <div className="dashboard-grid single-item-grid">
             {clienteActions.map((action, index) => (
               <ActionCard
                 key={index}
@@ -162,6 +59,10 @@ export default function Dashboard() {
               />
             ))}
           </div>
+        </div>
+      ) : (
+        <div className="dashboard-empty-state">
+          <p>Você não possui acesso aos módulos operacionais do Dashboard no momento.</p>
         </div>
       )}
     </div>

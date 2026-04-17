@@ -182,6 +182,7 @@ export default function CadastroUsuarios() {
     tipo_pessoa: "PF",
     ie: "",
     im: "",
+    nome_fantasia: "",
     telefone: "",
     regime_tributario: "Simples Nacional",
   });
@@ -202,6 +203,7 @@ export default function CadastroUsuarios() {
     tipo_pessoa: "",
     ie: "",
     im: "",
+    nome_fantasia: "",
     telefone: "",
     regime_tributario: "",
   });
@@ -511,6 +513,7 @@ export default function CadastroUsuarios() {
         data.append("tipo_pessoa", formData.tipo_pessoa);
         data.append("ie", formData.ie);
         data.append("im", formData.im);
+        data.append("nome_fantasia", formData.nome_fantasia);
         data.append("telefone", formData.telefone);
         data.append("regime_tributario", formData.regime_tributario);
       }
@@ -537,6 +540,7 @@ export default function CadastroUsuarios() {
         tipo_pessoa: "PF",
         ie: "",
         im: "",
+        nome_fantasia: "",
         telefone: "",
         regime_tributario: "Simples Nacional",
       });
@@ -629,6 +633,12 @@ export default function CadastroUsuarios() {
       documento: usuario.documento || "",
       temVeiculo: usuario.veiculos && usuario.veiculos.length > 0,
       veiculos: usuario.veiculos || [],
+      tipo_pessoa: usuario.tipo_pessoa || "PF",
+      ie: usuario.ie || "",
+      im: usuario.im || "",
+      nome_fantasia: usuario.nome_fantasia || "",
+      telefone: usuario.telefone || "",
+      regime_tributario: usuario.regime_tributario || "",
     });
     setEditFotoFile(null);
     // Backend returns Base64 or a filename. If it's Base64, it starts with data:image
@@ -703,6 +713,7 @@ export default function CadastroUsuarios() {
         data.append("tipo_pessoa", editFormData.tipo_pessoa);
         data.append("ie", editFormData.ie);
         data.append("im", editFormData.im);
+        data.append("nome_fantasia", editFormData.nome_fantasia);
         data.append("telefone", editFormData.telefone);
         data.append("regime_tributario", editFormData.regime_tributario);
       }
@@ -875,24 +886,36 @@ export default function CadastroUsuarios() {
 
               <div className="form-row">
                 <div className="form-group">
-                  <label>Nome:</label>
+                  <label>{editFormData.cargo === "cliente" ? "Nome / Razão Social:" : "Nome:"}</label>
                   <input
                     type="text"
                     name="nome"
                     value={editFormData.nome}
                     onChange={handleEditChange}
-                    placeholder="Ex: João"
+                    placeholder={editFormData.cargo === "cliente" ? "Ex: Empresa LTDA" : "Ex: João"}
                     required
                   />
                 </div>
+                {editFormData.cargo === "cliente" && editFormData.tipo_pessoa === "PJ" && (
+                  <div className="form-group fadeIn-animation">
+                    <label>Nome Fantasia:</label>
+                    <input
+                      type="text"
+                      name="nome_fantasia"
+                      value={editFormData.nome_fantasia}
+                      onChange={handleEditChange}
+                      placeholder="Ex: Nome da Marca"
+                    />
+                  </div>
+                )}
                 <div className="form-group">
-                  <label>Sobrenome:</label>
+                  <label>{editFormData.cargo === "cliente" ? "Complemento / Referência:" : "Sobrenome:"}</label>
                   <input
                     type="text"
                     name="sobrenome"
                     value={editFormData.sobrenome}
                     onChange={handleEditChange}
-                    placeholder="Ex: Silva"
+                    placeholder={editFormData.cargo === "cliente" ? "Ex: Unidade 1" : "Ex: Silva"}
                     required
                   />
                 </div>
@@ -1215,24 +1238,36 @@ export default function CadastroUsuarios() {
 
               <div className="dados-pessoais">
                 <div className="form-group">
-                  <label>Nome:</label>
+                  <label>{formData.cargo === "cliente" ? "Nome / Razão Social:" : "Nome:"}</label>
                   <input
                     type="text"
                     name="nome"
                     value={formData.nome}
                     onChange={handleChange}
-                    placeholder="Ex: João"
+                    placeholder={formData.cargo === "cliente" ? "Ex: Empresa LTDA" : "Ex: João"}
                     required
                   />
                 </div>
+                {formData.cargo === "cliente" && formData.tipo_pessoa === "PJ" && (
+                  <div className="form-group fadeIn-animation">
+                    <label>Nome Fantasia:</label>
+                    <input
+                      type="text"
+                      name="nome_fantasia"
+                      value={formData.nome_fantasia}
+                      onChange={handleChange}
+                      placeholder="Ex: Nome da Marca"
+                    />
+                  </div>
+                )}
                 <div className="form-group">
-                  <label>Sobrenome:</label>
+                  <label>{formData.cargo === "cliente" ? "Complemento / Referência:" : "Sobrenome:"}</label>
                   <input
                     type="text"
                     name="sobrenome"
                     value={formData.sobrenome}
                     onChange={handleChange}
-                    placeholder="Ex: Silva"
+                    placeholder={formData.cargo === "cliente" ? "Ex: Unidade 1" : "Ex: Silva"}
                     required
                   />
                 </div>
