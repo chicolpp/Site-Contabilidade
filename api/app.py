@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, send_from_directory
 from flask_cors import CORS
 from database import db
 from models import User
@@ -32,10 +32,20 @@ import jwt
 import datetime
 import os
 
-app = Flask(__name__)
+# Busca o dist em um lugar absoluto relativo ao executável (root do projeto)
+# Como app.py está em '/api', '..' sobe para a raiz
+STATIC_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+STATIC_FOLDER = os.path.join(STATIC_ROOT, 'dist')
+
+app = Flask(__name__, static_folder=STATIC_FOLDER, static_url_path='')
 CORS(app)
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql+psycopg2://postgres:postgres@localhost:5432/contabilidade"
+# Configuração de Banco de Dados (Suporte ao Render/Postgres)
+db_url = os.environ.get("DATABASE_URL")
+if db_url and db_url.startswith("postgres://"):
+    db_url = db_url.replace("postgres://", "postgresql://", 1)
+
+app.config["SQLALCHEMY_DATABASE_URI"] = db_url or "postgresql+psycopg2://postgres:postgres@localhost:5432/contabilidade"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "super-secret-key-contabilidade")
 
@@ -193,6 +203,25 @@ def toggle_status_usuario(id):
     user.ativo = not user.ativo
     db.session.commit()
     return {"message": "Status alterado", "user": user.to_dict()}, 200
+
+# Servir frontend React
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve(path):
+    if not path or path == '/':
+        return send_from_directory(app.static_folder, 'index.html')
+    
+    # Se o arquivo existir fisicamente na pasta dist, serve ele (logo.png, icons/...)
+    full_path = os.path.join(app.static_folder, path)
+    if os.path.isfile(full_path):
+        return send_from_directory(app.static_folder, path)
+    
+    # Se o caminho parece um arquivo (tem extensão) mas não existe, 404
+    if '.' in path:
+        return "Arquivo não encontrado", 404
+        
+    # Qualquer outra coisa (rotas do React como /dashboard), devolve o index do React
+    return send_from_directory(app.static_folder, 'index.html')
 
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
