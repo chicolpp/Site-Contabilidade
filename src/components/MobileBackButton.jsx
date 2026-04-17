@@ -29,7 +29,7 @@ export default function MobileBackButton() {
       style={{
         position: 'fixed',
         bottom: '30px',
-        right: '25px', // Colocado na direita para melhor alcance do polegar
+        left: '20px', // Movido para a esquerda conforme solicitado
         width: '56px',
         height: '56px',
         borderRadius: '50%',
