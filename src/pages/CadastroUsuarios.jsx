@@ -267,6 +267,7 @@ export default function CadastroUsuarios() {
       finalValue = applyDocumentMask(finalValue, docType);
     }
     
+    setFormData((prev) => {
       const newData = {
         ...prev,
         [name]: finalValue,
@@ -332,6 +333,7 @@ export default function CadastroUsuarios() {
       finalValue = applyDocumentMask(finalValue, editDocType);
     }
     
+    setEditFormData((prev) => {
       const newData = {
         ...prev,
         [name]: finalValue,
