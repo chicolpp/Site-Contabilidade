@@ -59,7 +59,8 @@ export default function Header() {
     { path: "/lancamentos", label: "Lançamentos Contábeis" },
     { path: "/relatorios", label: "Relatórios Fiscais" },
     { path: "/folha", label: "Folha de Pagamento" },
-    { path: "/tributos", label: "Tributos" }
+    { path: "/tributos", label: "Tributos" },
+    { path: "/envio-documentos", label: "Envio de Documentos" }
   ];
 
   const clienteLinks = [
@@ -74,7 +75,13 @@ export default function Header() {
     ...(cargo === "cliente" || isAdmin ? clienteLinks : [])
   ].filter((link, index, self) => 
     index === self.findIndex((t) => t.path === link.path)
-  );
+  ).filter(link => {
+    // Se for Cliente ou Admin, mostramos apenas os dois links específicos pedidos
+    if (cargo === "cliente" || isAdmin) {
+      return ["Documentos", "Envio de Documentos"].includes(link.label);
+    }
+    return true;
+  });
 
   // Áreas pesquisáveis do sistema
   const allSearchableAreas = [
@@ -106,6 +113,11 @@ export default function Header() {
         if (cargo === "cliente" && isClienteArea) return true;
         
         return false;
+      }).filter(area => {
+        if (cargo === "cliente" || isAdmin) {
+           return ["Documentos", "Envio de Documentos"].includes(area.label);
+        }
+        return true;
       }).filter(area => area.label.toLowerCase().includes(value.toLowerCase()));
       setSuggestions(filtered);
     } else {

@@ -4,6 +4,7 @@ import Dashboard from './pages/Dashboard';
 import CadastroUsuarios from './pages/CadastroUsuarios';
 import EnvioDocumentos from './pages/EnvioDocumentos';
 import Header from './pages/Header';
+import MobileBackButton from './components/MobileBackButton';
 import { Toaster } from 'sonner';
 import './App.css';
 
@@ -14,6 +15,7 @@ function Layout({ children }) {
       <main className="main-content">
         {children}
       </main>
+      <MobileBackButton />
     </div>
   );
 }

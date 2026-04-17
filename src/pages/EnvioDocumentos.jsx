@@ -115,7 +115,6 @@ export default function EnvioDocumentos() {
     return (
         <div className="envio-docs-container">
             <div className="envio-docs-header">
-                <button className="back-btn" onClick={() => navigate('/dashboard')}>← Voltar</button>
                 <h1>Envio de Documentos</h1>
             </div>
 
