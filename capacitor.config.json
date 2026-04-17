@@ -1,0 +1,9 @@
+{
+  "appId": "com.contabilidade.sistema",
+  "appName": "Sistema de Contabilidade",
+  "webDir": "dist",
+  "server": {
+    "url": "https://seu-sistema-contabilidade.onrender.com",
+    "cleartext": true
+  }
+}

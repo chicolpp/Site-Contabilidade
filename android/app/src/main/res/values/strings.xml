@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Sistema de Contabilidade</string>
+    <string name="title_activity_main">Sistema de Contabilidade</string>
+    <string name="package_name">com.contabilidade.sistema</string>
+    <string name="custom_url_scheme">com.contabilidade.sistema</string>
+</resources>
