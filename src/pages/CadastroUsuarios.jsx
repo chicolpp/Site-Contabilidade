@@ -456,7 +456,6 @@ export default function CadastroUsuarios() {
     e.preventDefault();
 
     if (!formData.nome.trim()) return toast.error("O nome é obrigatório.");
-    if (!formData.sobrenome.trim()) return toast.error("O sobrenome é obrigatório.");
     if (!formData.email.trim()) return toast.error("O email é obrigatório.");
     if (!formData.documento.trim()) return toast.error("O documento é obrigatório.");
 
@@ -493,7 +492,6 @@ export default function CadastroUsuarios() {
     try {
       const data = new FormData();
       data.append("nome", formData.nome);
-      data.append("sobrenome", formData.sobrenome);
       data.append("email", formData.email);
       data.append("password", formData.password);
       data.append("cargo", formData.cargo);
@@ -527,7 +525,6 @@ export default function CadastroUsuarios() {
       localStorage.removeItem('cadastro_user_photo');
       setFormData({
         nome: "",
-        sobrenome: "",
         email: "",
         password: "",
         confirmPassword: "",
@@ -622,7 +619,6 @@ export default function CadastroUsuarios() {
     setModalEditar(usuario);
     setEditFormData({
       nome: usuario.nome,
-      sobrenome: usuario.sobrenome,
       email: usuario.email,
       password: "",
       cargo: usuario.cargo,
@@ -662,7 +658,6 @@ export default function CadastroUsuarios() {
     e.preventDefault();
 
     if (!editFormData.nome.trim()) return toast.error("O nome é obrigatório.");
-    if (!editFormData.sobrenome.trim()) return toast.error("O sobrenome é obrigatório.");
     if (!editFormData.email.trim()) return toast.error("O email é obrigatório.");
     if (!editFormData.documento.trim()) return toast.error("O documento é obrigatório.");
 
@@ -681,7 +676,6 @@ export default function CadastroUsuarios() {
     try {
       const data = new FormData();
       data.append("nome", editFormData.nome);
-      data.append("sobrenome", editFormData.sobrenome);
       data.append("email", editFormData.email);
       data.append("cargo", editFormData.cargo);
       data.append("is_admin", editFormData.is_admin.toString());
@@ -1253,16 +1247,6 @@ export default function CadastroUsuarios() {
                     />
                   </div>
                 )}
-                <div className="form-group">
-                  <label>Sobrenome:</label>
-                  <input
-                    type="text"
-                    name="sobrenome"
-                    value={formData.sobrenome}
-                    onChange={handleChange}
-                    placeholder="Ex: Silva"
-                    required
-                  />
                 </div>
               </div>
             </div>
@@ -1581,7 +1565,7 @@ export default function CadastroUsuarios() {
                     {usuariosFiltrados.map((u) => (
                       <tr key={u.id} className={!u.ativo ? "usuario-inativo" : ""}>
                         <td>{u.id}</td>
-                        <td>{u.nome} {u.sobrenome}</td>
+                        <td>{u.nome}</td>
                         <td>{u.email}</td>
                         <td>
                           <span className="cargo-badge">
@@ -1657,7 +1641,7 @@ export default function CadastroUsuarios() {
                       <div className="card-body">
                         <div className="card-row">
                           <label>Nome:</label>
-                          <span>{u.nome} {u.sobrenome}</span>
+                          <span>{u.nome}</span>
                         </div>
                         <div className="card-row">
                           <label>Email:</label>
@@ -1847,7 +1831,7 @@ export default function CadastroUsuarios() {
                   <div className="details-photo-placeholder">👤</div>
                 )}
                 <div className="details-main-info">
-                  <h4>{modalDetalhes.nome} {modalDetalhes.sobrenome}</h4>
+                  <h4>{modalDetalhes.nome}</h4>
                   <span className="cargo-badge morador-badge">Morador</span>
                 </div>
               </div>

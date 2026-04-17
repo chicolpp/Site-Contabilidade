@@ -126,7 +126,7 @@ def login():
 def register():
     try:
         nome = request.form.get("nome", "")
-        sobrenome = request.form.get("sobrenome", "")
+        sobrenome = request.form.get("sobrenome", "") # Agora opcional, vindo vazio do frontend
         email = request.form.get("email")
         password = request.form.get("password")
         cargo = request.form.get("cargo", "contabilidade")
