@@ -7,6 +7,7 @@ import jwt
 import datetime
 import os
 import base64
+from whitenoise import WhiteNoise
 
 def allowed_file(filename):
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
@@ -37,8 +38,12 @@ import os
 STATIC_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 STATIC_FOLDER = os.path.join(STATIC_ROOT, 'dist')
 
-app = Flask(__name__, static_folder=STATIC_FOLDER)
+app = Flask(__name__)
 CORS(app)
+
+# Configura o WhiteNoise para servir a pasta dist
+# Ele vai interceptar pedidos para arquivos físicos (js, css, png) automaticamente
+app.wsgi_app = WhiteNoise(app.wsgi_app, root=STATIC_FOLDER, index_file=True)
 
 # Configuração de Banco de Dados (Suporte ao Render/Postgres)
 db_url = os.environ.get("DATABASE_URL")
@@ -204,14 +209,13 @@ def toggle_status_usuario(id):
     db.session.commit()
     return {"message": "Status alterado", "user": user.to_dict()}, 200
 
-# Servir frontend React
+# Servir frontend React (SPA Fallback)
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve(path):
-    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
-        return send_from_directory(app.static_folder, path)
-    else:
-        return send_from_directory(app.static_folder, 'index.html')
+    # Se o Flask chegou aqui, é porque não é uma rota de API e o WhiteNoise 
+    # não achou um arquivo físico. Então mandamos o index.html para o React.
+    return send_from_directory(STATIC_FOLDER, 'index.html')
 
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
