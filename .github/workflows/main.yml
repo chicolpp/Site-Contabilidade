@@ -67,11 +67,25 @@ jobs:
       - name: Sync Capacitor
         run: npx cap sync ios
 
-      - name: Build iOS project (Validation)
+      - name: Build iOS project (Unsigned IPA hack)
         run: |
           xcodebuild -project ios/App/App.xcodeproj \
                      -scheme App \
-                     -configuration Debug \
+                     -configuration Release \
                      -sdk iphoneos \
                      CODE_SIGNING_ALLOWED=NO \
-                     clean build
+                     build \
+                     -derivedDataPath build
+
+      - name: Create IPA
+        run: |
+          cd build/Build/Products/Release-iphoneos
+          mkdir Payload
+          cp -R App.app Payload/
+          zip -r App.ipa Payload
+
+      - name: Upload IPA Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-app
+          path: build/Build/Products/Release-iphoneos/App.ipa
