@@ -307,7 +307,7 @@ def listar_documentos():
             d_dict = d.to_dict()
             cliente = User.query.get(d.cliente_id)
             if cliente:
-                d_dict["cliente_nome"] = cliente.nome_fantasia || f"{cliente.nome} {cliente.sobrenome}"
+                d_dict["cliente_nome"] = cliente.nome_fantasia or f"{cliente.nome} {cliente.sobrenome}"
             result.append(d_dict)
             
         return {"documentos": result}
