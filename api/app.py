@@ -205,22 +205,17 @@ def toggle_status_usuario(id):
     return {"message": "Status alterado", "user": user.to_dict()}, 200
 
 # Servir frontend React
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def serve(path):
-    if not path or path == '/':
-        return send_from_directory(app.static_folder, 'index.html')
-    
-    # Se o arquivo existir fisicamente na pasta dist, serve ele (logo.png, icons/...)
-    full_path = os.path.join(app.static_folder, path)
-    if os.path.isfile(full_path):
-        return send_from_directory(app.static_folder, path)
-    
-    # Se o caminho parece um arquivo (tem extensão) mas não existe, 404
-    if '.' in path:
+@app.route('/')
+def index():
+    return send_from_directory(app.static_folder, 'index.html')
+
+# Fallback para rotas do React (SPA) - Qualquer rota não encontrada serve o index.html
+@app.errorhandler(404)
+def not_found(e):
+    # Se for um arquivo (tem ponto no nome), retorna 404 real
+    if "." in request.path:
         return "Arquivo não encontrado", 404
-        
-    # Qualquer outra coisa (rotas do React como /dashboard), devolve o index do React
+    # Se for uma rota (navegação), retorna o index.html para o React assumir
     return send_from_directory(app.static_folder, 'index.html')
 
 if __name__ == "__main__":
