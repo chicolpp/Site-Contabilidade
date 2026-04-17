@@ -2,6 +2,7 @@ from flask import Flask, request, send_from_directory
 from flask_cors import CORS
 from database import db
 from models import User
+from sqlalchemy import text
 from werkzeug.utils import secure_filename
 import jwt
 import datetime
@@ -68,8 +69,25 @@ def seed_admin():
         db.session.commit()
         print("Conta admin criada: admin@contabilidade.com / admin123")
 
+def apply_migrations():
+    """Tenta adicionar as colunas novas caso elas não existam (Migration Manual)"""
+    try:
+        with db.engine.connect() as conn:
+            # PostgreSQL suporta 'ADD COLUMN IF NOT EXISTS'
+            conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS tipo_pessoa VARCHAR(2)"))
+            conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS ie VARCHAR(20)"))
+            conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS im VARCHAR(20)"))
+            conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS data_abertura VARCHAR(20)"))
+            conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS telefone VARCHAR(20)"))
+            conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS regime_tributario VARCHAR(50)"))
+            conn.commit()
+            print("Migrações de colunas aplicadas com sucesso.")
+    except Exception as e:
+        print(f"Erro ao aplicar migrações: {e}")
+
 with app.app_context():
     db.create_all()
+    apply_migrations() # Garante que colunas novas entrem em tabelas existentes
     seed_admin()
 
 @app.route("/api/login", methods=["POST"])
