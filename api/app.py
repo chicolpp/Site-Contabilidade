@@ -71,7 +71,7 @@ with app.app_context():
     db.create_all()
     seed_admin()
 
-@app.route("/login", methods=["POST"])
+@app.route("/api/login", methods=["POST"])
 def login():
     data = request.json
     print(f"Tentativa de login: {data.get('email')}")
@@ -102,7 +102,7 @@ def login():
         "user": user.to_dict()
     }
 
-@app.route("/register", methods=["POST"])
+@app.route("/api/register", methods=["POST"])
 def register():
     try:
         nome = request.form.get("nome", "")
@@ -144,7 +144,7 @@ def register():
         db.session.rollback()
         return {"error": f"Erro interno: {str(e)}"}, 500
 
-@app.route("/usuarios", methods=["GET"])
+@app.route("/api/usuarios", methods=["GET"])
 def listar_usuarios():
     try:
         usuarios = User.query.order_by(User.data_criacao.desc()).all()
@@ -152,7 +152,7 @@ def listar_usuarios():
     except Exception as e:
         return {"error": f"Erro ao listar usuários: {str(e)}"}, 500
 
-@app.route("/usuarios/<int:id>", methods=["PUT"])
+@app.route("/api/usuarios/<int:id>", methods=["PUT"])
 def editar_usuario(id):
     user = User.query.get_or_404(id)
     
@@ -190,14 +190,14 @@ def editar_usuario(id):
     db.session.commit()
     return {"message": "Usuário atualizado", "user": user.to_dict()}, 200
 
-@app.route("/usuarios/<int:id>", methods=["DELETE"])
+@app.route("/api/usuarios/<int:id>", methods=["DELETE"])
 def deletar_usuario(id):
     user = User.query.get_or_404(id)
     db.session.delete(user)
     db.session.commit()
     return {"message": "Usuário deletado"}, 200
 
-@app.route("/usuarios/<int:id>/toggle-status", methods=["POST"])
+@app.route("/api/usuarios/<int:id>/toggle-status", methods=["POST"])
 def toggle_status_usuario(id):
     user = User.query.get_or_404(id)
     user.ativo = not user.ativo
