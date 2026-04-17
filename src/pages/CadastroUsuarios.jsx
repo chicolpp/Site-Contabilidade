@@ -168,6 +168,7 @@ export default function CadastroUsuarios() {
   const [formData, setFormData] = useState({
     nome: "",
     sobrenome: "",
+    nome_fantasia: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -182,7 +183,6 @@ export default function CadastroUsuarios() {
     tipo_pessoa: "PF",
     ie: "",
     im: "",
-    nome_fantasia: "",
     telefone: "",
     regime_tributario: "Simples Nacional",
   });
@@ -191,6 +191,7 @@ export default function CadastroUsuarios() {
   const [editFormData, setEditFormData] = useState({
     nome: "",
     sobrenome: "",
+    nome_fantasia: "",
     email: "",
     password: "",
     cargo: "",
@@ -203,7 +204,6 @@ export default function CadastroUsuarios() {
     tipo_pessoa: "",
     ie: "",
     im: "",
-    nome_fantasia: "",
     telefone: "",
     regime_tributario: "",
   });
@@ -513,9 +513,9 @@ export default function CadastroUsuarios() {
         data.append("tipo_pessoa", formData.tipo_pessoa);
         data.append("ie", formData.ie);
         data.append("im", formData.im);
-        data.append("nome_fantasia", formData.nome_fantasia);
         data.append("telefone", formData.telefone);
         data.append("regime_tributario", formData.regime_tributario);
+        data.append("nome_fantasia", formData.nome_fantasia);
       }
 
       await api.post("/register", data, {
@@ -540,7 +540,6 @@ export default function CadastroUsuarios() {
         tipo_pessoa: "PF",
         ie: "",
         im: "",
-        nome_fantasia: "",
         telefone: "",
         regime_tributario: "Simples Nacional",
       });
@@ -633,12 +632,6 @@ export default function CadastroUsuarios() {
       documento: usuario.documento || "",
       temVeiculo: usuario.veiculos && usuario.veiculos.length > 0,
       veiculos: usuario.veiculos || [],
-      tipo_pessoa: usuario.tipo_pessoa || "PF",
-      ie: usuario.ie || "",
-      im: usuario.im || "",
-      nome_fantasia: usuario.nome_fantasia || "",
-      telefone: usuario.telefone || "",
-      regime_tributario: usuario.regime_tributario || "",
     });
     setEditFotoFile(null);
     // Backend returns Base64 or a filename. If it's Base64, it starts with data:image
@@ -713,9 +706,9 @@ export default function CadastroUsuarios() {
         data.append("tipo_pessoa", editFormData.tipo_pessoa);
         data.append("ie", editFormData.ie);
         data.append("im", editFormData.im);
-        data.append("nome_fantasia", editFormData.nome_fantasia);
         data.append("telefone", editFormData.telefone);
         data.append("regime_tributario", editFormData.regime_tributario);
+        data.append("nome_fantasia", editFormData.nome_fantasia);
       }
 
       await api.put(`/usuarios/${modalEditar.id}`, data, {
@@ -897,25 +890,25 @@ export default function CadastroUsuarios() {
                   />
                 </div>
                 {editFormData.cargo === "cliente" && editFormData.tipo_pessoa === "PJ" && (
-                  <div className="form-group fadeIn-animation">
+                  <div className="form-group">
                     <label>Nome Fantasia:</label>
                     <input
                       type="text"
                       name="nome_fantasia"
                       value={editFormData.nome_fantasia}
                       onChange={handleEditChange}
-                      placeholder="Ex: Nome da Marca"
+                      placeholder="Ex: Nome da Minha Loja"
                     />
                   </div>
                 )}
                 <div className="form-group">
-                  <label>{editFormData.cargo === "cliente" ? "Complemento / Referência:" : "Sobrenome:"}</label>
+                  <label>Sobrenome:</label>
                   <input
                     type="text"
                     name="sobrenome"
                     value={editFormData.sobrenome}
                     onChange={handleEditChange}
-                    placeholder={editFormData.cargo === "cliente" ? "Ex: Unidade 1" : "Ex: Silva"}
+                    placeholder="Ex: Silva"
                     required
                   />
                 </div>
@@ -1249,25 +1242,25 @@ export default function CadastroUsuarios() {
                   />
                 </div>
                 {formData.cargo === "cliente" && formData.tipo_pessoa === "PJ" && (
-                  <div className="form-group fadeIn-animation">
+                  <div className="form-group" style={{ marginTop: '10px' }}>
                     <label>Nome Fantasia:</label>
                     <input
                       type="text"
                       name="nome_fantasia"
                       value={formData.nome_fantasia}
                       onChange={handleChange}
-                      placeholder="Ex: Nome da Marca"
+                      placeholder="Ex: Nome da Minha Loja"
                     />
                   </div>
                 )}
                 <div className="form-group">
-                  <label>{formData.cargo === "cliente" ? "Complemento / Referência:" : "Sobrenome:"}</label>
+                  <label>Sobrenome:</label>
                   <input
                     type="text"
                     name="sobrenome"
                     value={formData.sobrenome}
                     onChange={handleChange}
-                    placeholder={formData.cargo === "cliente" ? "Ex: Unidade 1" : "Ex: Silva"}
+                    placeholder="Ex: Silva"
                     required
                   />
                 </div>

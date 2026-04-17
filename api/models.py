@@ -5,8 +5,9 @@ class User(db.Model):
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True)
-    nome = db.Column(db.String(100), nullable=False)
+    nome = db.Column(db.String(100), nullable=False) # Nome ou Razão Social
     sobrenome = db.Column(db.String(100), nullable=False)
+    nome_fantasia = db.Column(db.String(150), nullable=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
     cargo = db.Column(db.String(50), nullable=False, default="contador")
@@ -22,7 +23,6 @@ class User(db.Model):
     data_abertura = db.Column(db.String(20), nullable=True)
     telefone = db.Column(db.String(20), nullable=True)
     regime_tributario = db.Column(db.String(50), nullable=True)
-    nome_fantasia = db.Column(db.String(255), nullable=True)
 
     data_criacao = db.Column(db.DateTime, default=db.func.now())
     ultimo_acesso = db.Column(db.DateTime, nullable=True)

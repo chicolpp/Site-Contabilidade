@@ -80,7 +80,7 @@ def apply_migrations():
             conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS data_abertura VARCHAR(20)"))
             conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS telefone VARCHAR(20)"))
             conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS regime_tributario VARCHAR(50)"))
-            conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS nome_fantasia VARCHAR(255)"))
+            conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS nome_fantasia VARCHAR(150)"))
             conn.commit()
             print("Migrações de colunas aplicadas com sucesso.")
     except Exception as e:
@@ -228,6 +228,7 @@ def editar_usuario(id):
         user.is_admin = data.get("is_admin", user.is_admin)
         user.ativo = data.get("ativo", user.ativo)
         user.documento = data.get("documento", user.documento)
+        user.nome_fantasia = data.get("nome_fantasia", user.nome_fantasia)
         if data.get("password"):
             user.set_password(data["password"])
 
