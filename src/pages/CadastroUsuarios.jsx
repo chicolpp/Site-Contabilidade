@@ -182,7 +182,6 @@ export default function CadastroUsuarios() {
     tipo_pessoa: "PF",
     ie: "",
     im: "",
-    data_abertura: "",
     telefone: "",
     regime_tributario: "Simples Nacional",
   });
@@ -203,7 +202,6 @@ export default function CadastroUsuarios() {
     tipo_pessoa: "",
     ie: "",
     im: "",
-    data_abertura: "",
     telefone: "",
     regime_tributario: "",
   });
@@ -486,7 +484,6 @@ export default function CadastroUsuarios() {
     if (formData.cargo === "cliente") {
       if (!validateEmail(formData.email)) return toast.error("E-mail inválido.");
       if (formData.telefone && formData.telefone.length < 14) return toast.error("Telefone completo é obrigatório.");
-      if (!formData.data_abertura) return toast.error("Data de abertura é obrigatória.");
     }
 
     setLoading(true);
@@ -514,7 +511,6 @@ export default function CadastroUsuarios() {
         data.append("tipo_pessoa", formData.tipo_pessoa);
         data.append("ie", formData.ie);
         data.append("im", formData.im);
-        data.append("data_abertura", formData.data_abertura);
         data.append("telefone", formData.telefone);
         data.append("regime_tributario", formData.regime_tributario);
       }
@@ -541,7 +537,6 @@ export default function CadastroUsuarios() {
         tipo_pessoa: "PF",
         ie: "",
         im: "",
-        data_abertura: "",
         telefone: "",
         regime_tributario: "Simples Nacional",
       });
@@ -708,7 +703,6 @@ export default function CadastroUsuarios() {
         data.append("tipo_pessoa", editFormData.tipo_pessoa);
         data.append("ie", editFormData.ie);
         data.append("im", editFormData.im);
-        data.append("data_abertura", editFormData.data_abertura);
         data.append("telefone", editFormData.telefone);
         data.append("regime_tributario", editFormData.regime_tributario);
       }
@@ -1032,16 +1026,6 @@ export default function CadastroUsuarios() {
                   </div>
 
                   <div className="form-row">
-                    <div className="form-group">
-                      <label>Data de Abertura / Início:</label>
-                      <input
-                        type="date"
-                        name="data_abertura"
-                        value={editFormData.data_abertura}
-                        onChange={handleEditChange}
-                        required
-                      />
-                    </div>
                     <div className="form-group">
                       <label>Regime Tributário:</label>
                       <select name="regime_tributario" value={editFormData.regime_tributario} onChange={handleEditChange} className="premium-select-field">
@@ -1465,17 +1449,7 @@ export default function CadastroUsuarios() {
                   </div>
                 </div>
 
-                <div className="form-row-2">
-                  <div className="form-group">
-                    <label>Data de Abertura / Início:</label>
-                    <input
-                      type="date"
-                      name="data_abertura"
-                      value={formData.data_abertura}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
+                <div className="form-row">
                   <div className="form-group">
                     <label>Regime Tributário:</label>
                     <select name="regime_tributario" value={formData.regime_tributario} onChange={handleChange} className="premium-select-field">
