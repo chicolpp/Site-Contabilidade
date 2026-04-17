@@ -53,6 +53,14 @@ function App() {
             </Layout>
           } 
         />
+        <Route 
+          path="/documentos" 
+          element={
+            <Layout>
+              <Documentos />
+            </Layout>
+          } 
+        />
         
         {/* Placeholder routes for future modules */}
         <Route path="*" element={<Navigate to="/dashboard" />} />
