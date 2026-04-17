@@ -37,7 +37,7 @@ import os
 STATIC_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 STATIC_FOLDER = os.path.join(STATIC_ROOT, 'dist')
 
-app = Flask(__name__, static_folder=STATIC_FOLDER, static_url_path='')
+app = Flask(__name__, static_folder=STATIC_FOLDER)
 CORS(app)
 
 # Configuração de Banco de Dados (Suporte ao Render/Postgres)
@@ -205,18 +205,13 @@ def toggle_status_usuario(id):
     return {"message": "Status alterado", "user": user.to_dict()}, 200
 
 # Servir frontend React
-@app.route('/')
-def index():
-    return send_from_directory(app.static_folder, 'index.html')
-
-# Fallback para rotas do React (SPA) - Qualquer rota não encontrada serve o index.html
-@app.errorhandler(404)
-def not_found(e):
-    # Se for um arquivo (tem ponto no nome), retorna 404 real
-    if "." in request.path:
-        return "Arquivo não encontrado", 404
-    # Se for uma rota (navegação), retorna o index.html para o React assumir
-    return send_from_directory(app.static_folder, 'index.html')
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve(path):
+    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
+        return send_from_directory(app.static_folder, path)
+    else:
+        return send_from_directory(app.static_folder, 'index.html')
 
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
