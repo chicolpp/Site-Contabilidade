@@ -112,8 +112,6 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard-container">
-      <h1>Painel de Controle</h1>
-      <p>Bem-vindo ao Sistema de Contabilidade</p>
 
       {isAdmin && (
         <div className="dashboard-section">
