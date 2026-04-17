@@ -895,16 +895,6 @@ export default function CadastroUsuarios() {
                     />
                   </div>
                 )}
-                <div className="form-group">
-                  <label>Sobrenome:</label>
-                  <input
-                    type="text"
-                    name="sobrenome"
-                    value={editFormData.sobrenome}
-                    onChange={handleEditChange}
-                    placeholder="Ex: Silva"
-                    required
-                  />
                 </div>
               </div>
 
@@ -999,6 +989,19 @@ export default function CadastroUsuarios() {
                         <option value="PJ">Pessoa Jurídica</option>
                       </select>
                     </div>
+
+                    {editFormData.tipo_pessoa === "PJ" && (
+                      <div className="form-group" style={{ marginTop: '10px', marginBottom: '15px' }}>
+                        <label>Nome Fantasia:</label>
+                        <input
+                          type="text"
+                          name="nome_fantasia"
+                          value={editFormData.nome_fantasia}
+                          onChange={handleEditChange}
+                          placeholder="Ex: Nome da Minha Loja"
+                        />
+                      </div>
+                    )}
                     <div className="form-group">
                       <label>{editFormData.tipo_pessoa === "PJ" ? "CNPJ:" : "CPF:"}</label>
                       <input
@@ -1235,18 +1238,6 @@ export default function CadastroUsuarios() {
                     required
                   />
                 </div>
-                {formData.cargo === "cliente" && formData.tipo_pessoa === "PJ" && (
-                  <div className="form-group" style={{ marginTop: '10px' }}>
-                    <label>Nome Fantasia:</label>
-                    <input
-                      type="text"
-                      name="nome_fantasia"
-                      value={formData.nome_fantasia}
-                      onChange={handleChange}
-                      placeholder="Ex: Nome da Minha Loja"
-                    />
-                  </div>
-                )}
                 </div>
               </div>
 
@@ -1436,6 +1427,19 @@ export default function CadastroUsuarios() {
                     />
                   </div>
                 </div>
+
+                {formData.tipo_pessoa === "PJ" && (
+                  <div className="form-group" style={{ marginTop: '10px', marginBottom: '15.5px' }}>
+                    <label>Nome Fantasia:</label>
+                    <input
+                      type="text"
+                      name="nome_fantasia"
+                      value={formData.nome_fantasia}
+                      onChange={handleChange}
+                      placeholder="Ex: Nome da Minha Loja"
+                    />
+                  </div>
+                )}
 
                 <div className="form-row-2">
                   <div className="form-group">
