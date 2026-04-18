@@ -516,9 +516,7 @@ export default function CadastroUsuarios() {
         data.append("nome_fantasia", formData.nome_fantasia);
       }
 
-      await api.post("/register", data, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      await api.post("/register", data);
 
       toast.success("Usuário cadastrado com sucesso!");
       localStorage.removeItem('cadastro_user_data');
@@ -705,9 +703,7 @@ export default function CadastroUsuarios() {
         data.append("nome_fantasia", editFormData.nome_fantasia);
       }
 
-      await api.put(`/usuarios/${modalEditar.id}`, data, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      await api.put(`/usuarios/${editFormData.id}`, data);
       toast.success("Usuário atualizado com sucesso!");
       closeEditarModal();
       fetchUsuarios();

@@ -81,6 +81,7 @@ def apply_migrations():
             conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS telefone VARCHAR(20)"))
             conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS regime_tributario VARCHAR(50)"))
             conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS nome_fantasia VARCHAR(150)"))
+            conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS documento VARCHAR(20)"))
             conn.commit()
             print("Migrações de colunas aplicadas com sucesso.")
     except Exception as e:
