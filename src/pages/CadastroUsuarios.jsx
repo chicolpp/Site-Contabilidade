@@ -895,7 +895,6 @@ export default function CadastroUsuarios() {
                     />
                   </div>
                 )}
-                </div>
               </div>
 
               <div className="form-group">
