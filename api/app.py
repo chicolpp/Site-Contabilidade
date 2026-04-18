@@ -49,6 +49,7 @@ if db_url and db_url.startswith("postgres://"):
 
 app.config["SQLALCHEMY_DATABASE_URI"] = db_url or "postgresql+psycopg2://postgres:postgres@localhost:5432/contabilidade"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {"pool_pre_ping": True}
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "super-secret-key-contabilidade")
 
 db.init_app(app)
