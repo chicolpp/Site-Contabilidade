@@ -1179,247 +1179,180 @@ export default function CadastroUsuarios() {
       {/* TAB CONTENT */}
       <div className="tab-content">
         {activeTab === "cadastro" && (
-          <form className="cadastro-form" onSubmit={handleSubmit} noValidate>
-            <h2>Cadastro de Usuário</h2>
-
-            {/* Seção Foto + Dados Pessoais - Moved to Top */}
-            <div className="secao-foto-dados">
-              <div className="foto-upload-box">
-                <div className="foto-preview">
-                  {fotoPreview ? (
-                    <div className="photo-preview-container">
-                      <img src={fotoPreview} alt="Preview" className="photo-preview-img" />
-                      <button
-                        type="button"
-                        className="remove-photo-btn"
-                        onClick={() => {
-                          setFotoFile(null);
-                          setFotoPreview(null);
-                          localStorage.removeItem('cadastro_user_photo');
-                        }}
-                      >
-                        ✕ remover
-                      </button>
-                    </div>
-                  ) : (
-                    <span className="foto-placeholder">👤</span>
-                  )}
-                </div>
-                <div className="photo-actions">
-                  <button
-                    type="button"
-                    className="photo-action-btn camera-btn"
-                    onClick={() => openWebcamModal('cadastro')}
-                  >
-                    📷 Tirar Foto
-                  </button>
-                  <button
-                    type="button"
-                    className="photo-action-btn gallery-btn"
-                    onClick={() => {
-                      const input = document.createElement('input');
-                      input.type = 'file';
-                      input.accept = 'image/*';
-                      input.onchange = handleFotoChange;
-                      input.click();
-                    }}
-                  >
-                    🖼️ Galeria
-                  </button>
-                </div>
-              </div>
-
-              <div className="dados-pessoais">
-                <div className="form-group">
-                  <label>{formData.cargo === "cliente" ? "Nome / Razão Social:" : "Nome:"}</label>
-                  <input
-                    type="text"
-                    name="nome"
-                    value={formData.nome}
-                    onChange={handleChange}
-                    placeholder={formData.cargo === "cliente" ? "Ex: Empresa LTDA" : "Ex: João"}
-                    required
-                  />
-                </div>
-                </div>
-              </div>
-
-            {/* Linha Email + Cargo */}
-            <div className="form-row-2">
-              <div className="form-group">
-                <label>Email:</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="Ex: joao@email.com"
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Cargo:</label>
-                <div className="custom-select-container">
-                  <div
-                    className={`custom-select ${cargoDropdownOpen ? "open" : ""}`}
-                    onClick={() => setCargoDropdownOpen(!cargoDropdownOpen)}
-                  >
-                    <span className="custom-select-value">
-                      {cargos.find((c) => c.value === formData.cargo)?.label || "Selecione"}
-                    </span>
-                    <span className={`custom-select-arrow ${cargoDropdownOpen ? "open" : ""}`}>▼</span>
-                  </div>
-                  <div className={`custom-select-options ${cargoDropdownOpen ? "open" : ""}`}>
-                    {cargos.map((c) => (
-                      <div
-                        key={c.value}
-                        className={`custom-select-option ${formData.cargo === c.value ? "selected" : ""}`}
-                        onClick={() => {
-                          setFormData((prev) => {
-                            const newData = { ...prev, cargo: c.value };
-                            if (c.value === "morador") {
-                              newData.is_admin = false;
-                            }
-                            return newData;
-                          });
-                          setCargoDropdownOpen(false);
-                        }}
-                      >
-                        {c.label}
+          <form className="cadastro-form-premium" onSubmit={handleSubmit} noValidate>
+            <div className="form-section">
+              <h2 className="section-title">Informações de Perfil e Acesso</h2>
+              
+              <div className="secao-foto-dados-premium">
+                <div className="foto-upload-box">
+                  <div className="foto-preview">
+                    {fotoPreview ? (
+                      <div className="photo-preview-container">
+                        <img src={fotoPreview} alt="Preview" className="photo-preview-img" />
+                        <button
+                          type="button"
+                          className="remove-photo-btn"
+                          onClick={() => {
+                            setFotoFile(null);
+                            setFotoPreview(null);
+                            localStorage.removeItem('cadastro_user_photo');
+                          }}
+                        >
+                          ✕
+                        </button>
                       </div>
-                    ))}
+                    ) : (
+                      <span className="foto-placeholder">👤</span>
+                    )}
                   </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Linha Senha + Confirmar */}
-            <div className="form-row-2">
-              <div className="form-group">
-                <label>Senha:</label>
-                <input
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                  minLength={6}
-                />
-              </div>
-              <div className="form-group">
-                <label>Confirmar Senha:</label>
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-            </div>
-
-            {formData.cargo === "morador" && (
-              <div className="form-row-2">
-                <div className="form-group">
-                  <label>Unidade:</label>
-                  <input
-                    type="text"
-                    name="unidade"
-                    value={formData.unidade}
-                    onChange={handleChange}
-                    placeholder="Ex: Apt 101"
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <div className="label-with-action">
-                    <label>Documento:</label>
-                    <div className="doc-type-wrapper-inline premium-wrapper">
-                      <PremiumSelect
-                        options={docTypeOptions}
-                        value={docType}
-                        onChange={handleDocTypeSelect}
-                      />
-                    </div>
-                  </div>
-                  <input
-                    type="text"
-                    name="documento"
-                    className="premium-input-standalone"
-                    value={formData.documento}
-                    onChange={handleChange}
-                    placeholder={
-                      docType === "CPF" ? "Ex: 123.456.789-00" :
-                        docType === "RG" ? "Ex: 12.345.678-x" :
-                          docType === "CNH" ? "Ex: 12345678901" :
-                            "Ex: AB123456"
-                    }
-                    required
-                  />
-                </div>
-              </div>
-            )}
-
-            {formData.cargo === "morador" && (
-              <div className="form-group vehicle-checkbox-group">
-                <label>VEÍCULOS</label>
-                <div className="checkbox-row">
-                  <label className="premium-switch">
-                    <input
-                      type="checkbox"
-                      id="temVeiculo"
-                      name="temVeiculo"
-                      checked={formData.temVeiculo}
-                      onChange={handleChange}
-                    />
-                    <span className="switch-slider"></span>
-                  </label>
-                  <label htmlFor="temVeiculo" className="switch-label">O morador possui veículos?</label>
-                </div>
-
-                {formData.temVeiculo && formData.veiculos.length > 0 && (
-                  <div className="vehicle-summary-area">
-                    {formData.veiculos.map((v, idx) => (
-                      <div key={idx} className="vehicle-summary-card">
-                        <CarIcon className="summary-card-icon" />
-                        <div className="summary-badges-container">
-                          <span className="summary-badge plate">{v.placa}</span>
-                          <span className="summary-badge brand">{v.marca}</span>
-                          <span className="summary-badge model">{v.modelo}</span>
-                          <span className="summary-badge color">{v.cor}</span>
-                        </div>
-                      </div>
-                    ))}
-                    <button 
-                      type="button" 
-                      className="edit-vehicles-btn"
+                  <div className="photo-actions">
+                    <button
+                      type="button"
+                      className="photo-action-btn camera-btn"
+                      onClick={() => openWebcamModal('cadastro')}
+                    >
+                      📷 Foto
+                    </button>
+                    <button
+                      type="button"
+                      className="photo-action-btn gallery-btn"
                       onClick={() => {
-                        setTempVeiculos([...formData.veiculos]);
-                        setModalVeiculos("cadastro");
+                        const input = document.createElement('input');
+                        input.type = 'file';
+                        input.accept = 'image/*';
+                        input.onchange = handleFotoChange;
+                        input.click();
                       }}
                     >
-                      ✏️ Editar Veículos
+                      🖼️ Galeria
                     </button>
+                  </div>
+                </div>
+
+                <div className="dados-principais-col">
+                  <div className="form-group">
+                    <label>{formData.cargo === "cliente" ? "Nome / Razão Social" : "Nome Completo"}</label>
+                    <input
+                      type="text"
+                      name="nome"
+                      value={formData.nome}
+                      onChange={handleChange}
+                      placeholder={formData.cargo === "cliente" ? "Ex: Empresa LTDA" : "Ex: João Silva"}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Email Corporativo / Pessoal</label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      placeholder="Ex: joao@email.com"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Tipo de Cargo / Perfil</label>
+                  <div className="custom-select-container">
+                    <div
+                      className={`custom-select ${cargoDropdownOpen ? "open" : ""}`}
+                      onClick={() => setCargoDropdownOpen(!cargoDropdownOpen)}
+                    >
+                      <span className="custom-select-value">
+                        {cargos.find((c) => c.value === formData.cargo)?.label || "Selecione"}
+                      </span>
+                      <span className={`custom-select-arrow ${cargoDropdownOpen ? "open" : ""}`}>▼</span>
+                    </div>
+                    <div className={`custom-select-options ${cargoDropdownOpen ? "open" : ""}`}>
+                      {cargos.map((c) => (
+                        <div
+                          key={c.value}
+                          className={`custom-select-option ${formData.cargo === c.value ? "selected" : ""}`}
+                          onClick={() => {
+                            setFormData((prev) => {
+                              const newData = { ...prev, cargo: c.value };
+                              return newData;
+                            });
+                            setCargoDropdownOpen(false);
+                          }}
+                        >
+                          {c.label}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                
+                {formData.cargo !== "morador" && formData.cargo !== "cliente" && (
+                  <div className="form-group admin-toggle-group">
+                    <label>Nível de Acesso</label>
+                    <div className="admin-toggle-premium">
+                      <div className="admin-toggle-info">
+                        <span className="admin-toggle-title">Administrador</span>
+                      </div>
+                      <label className="toggle-switch">
+                        <input
+                          type="checkbox"
+                          name="is_admin"
+                          checked={formData.is_admin}
+                          onChange={handleChange}
+                        />
+                        <span className="toggle-slider"></span>
+                      </label>
+                    </div>
                   </div>
                 )}
               </div>
-            )}
+            </div>
 
+            <div className="form-section">
+              <h2 className="section-title">Segurança da Conta</h2>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Senha</label>
+                  <input
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    placeholder="Mínimo 6 caracteres"
+                    required
+                    minLength={6}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Confirmar Senha</label>
+                  <input
+                    type="password"
+                    name="confirmPassword"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    placeholder="Repita a senha"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
 
             {formData.cargo === "cliente" && (
-              <div className="cliente-fiscal-section">
-                <div className="section-title">Dados Fiscais / Cliente</div>
+              <div className="form-section">
+                <h2 className="section-title">Dados Fiscais e Tributários</h2>
                 
-                <div className="form-row-2">
+                <div className="form-row">
                   <div className="form-group">
-                    <label>Tipo de Pessoa:</label>
+                    <label>Tipo de Pessoa</label>
                     <select name="tipo_pessoa" value={formData.tipo_pessoa} onChange={handleChange} className="premium-select-field">
-                      <option value="PF">Pessoa Física</option>
-                      <option value="PJ">Pessoa Jurídica</option>
+                      <option value="PF">Pessoa Física (CPF)</option>
+                      <option value="PJ">Pessoa Jurídica (CNPJ)</option>
                     </select>
                   </div>
                   <div className="form-group">
-                    <label>{formData.tipo_pessoa === "PJ" ? "CNPJ:" : "CPF:"}</label>
+                    <label>{formData.tipo_pessoa === "PJ" ? "CNPJ" : "CPF"}</label>
                     <input
                       type="text"
                       name="documento"
@@ -1432,8 +1365,8 @@ export default function CadastroUsuarios() {
                 </div>
 
                 {formData.tipo_pessoa === "PJ" && (
-                  <div className="form-group" style={{ marginTop: '10px', marginBottom: '15.5px' }}>
-                    <label>Nome Fantasia:</label>
+                  <div className="form-group">
+                    <label>Nome Fantasia</label>
                     <input
                       type="text"
                       name="nome_fantasia"
@@ -1444,19 +1377,19 @@ export default function CadastroUsuarios() {
                   </div>
                 )}
 
-                <div className="form-row-2">
+                <div className="form-row">
                   <div className="form-group">
-                    <label>Inscrição Estadual:</label>
+                    <label>Inscrição Estadual</label>
                     <input
                       type="text"
                       name="ie"
                       value={formData.ie}
                       onChange={handleChange}
-                      placeholder="Somente números"
+                      placeholder="Isento ou números"
                     />
                   </div>
                   <div className="form-group">
-                    <label>Inscrição Municipal:</label>
+                    <label>Inscrição Municipal</label>
                     <input
                       type="text"
                       name="im"
@@ -1469,18 +1402,15 @@ export default function CadastroUsuarios() {
 
                 <div className="form-row">
                   <div className="form-group">
-                    <label>Regime Tributário:</label>
+                    <label>Regime Tributário</label>
                     <select name="regime_tributario" value={formData.regime_tributario} onChange={handleChange} className="premium-select-field">
                       <option value="Simples Nacional">Simples Nacional</option>
                       <option value="Lucro Presumido">Lucro Presumido</option>
                       <option value="Lucro Real">Lucro Real</option>
                     </select>
                   </div>
-                </div>
-
-                <div className="form-row">
                   <div className="form-group">
-                    <label>Telefone de Contato:</label>
+                    <label>Telefone de Contato</label>
                     <input
                       type="text"
                       name="telefone"
@@ -1494,32 +1424,13 @@ export default function CadastroUsuarios() {
               </div>
             )}
 
-
-            {formData.cargo !== "morador" && formData.cargo !== "cliente" && (
-              <div className="admin-toggle-container">
-                <div className="admin-toggle-box">
-                  <div className="admin-toggle-info">
-                    <span className="admin-toggle-icon">👑</span>
-                    <div>
-                      <span className="admin-toggle-title">Administrador</span>
-                      <span className="admin-toggle-desc">Acesso total ao sistema</span>
-                    </div>
-                  </div>
-                  <label className="toggle-switch">
-                    <input
-                      type="checkbox"
-                      name="is_admin"
-                      checked={formData.is_admin}
-                      onChange={handleChange}
-                    />
-                    <span className="toggle-slider"></span>
-                  </label>
-                </div>
-              </div>
-            )}
-
-            <button type="submit" className="submit-btn" disabled={loading}>
-              {loading ? "Cadastrando..." : "Cadastrar Usuário"}
+            <button type="submit" className="submit-btn-premium" disabled={loading}>
+              {loading ? "Cadastrando..." : (
+                <>
+                  <UserPlusIcon style={{ width: '20px', height: '20px' }} />
+                  Cadastrar Usuário
+                </>
+              )}
             </button>
           </form>
         )}
