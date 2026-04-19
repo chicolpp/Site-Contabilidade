@@ -4,7 +4,7 @@ services:
     name: contabilidade-erp
     runtime: python
     # O comando de build instala o Node, gera o dist do React e depois instala o Python
-    buildCommand: npm install && npm run build && pip install -r api/requirements.txt
+    buildCommand: rm -f .env && npm install && npm run build && pip install -r api/requirements.txt
     # O comando de start usa o Gunicorn rodando o arquivo wsgi.py criado
     startCommand: gunicorn wsgi:app
     envVars:
