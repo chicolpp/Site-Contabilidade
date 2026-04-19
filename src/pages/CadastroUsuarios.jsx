@@ -542,8 +542,16 @@ export default function CadastroUsuarios() {
       setFotoFile(null);
       setFotoPreview(null);
     } catch (error) {
-      toast.error(error.response?.data?.error || "Erro ao cadastrar usuário");
-      console.error(error);
+      let debugInfo = `Msg: ${error.message}`;
+      if (error.response) {
+        debugInfo += ` | Status: ${error.response.status}`;
+        debugInfo += ` | Data: ${typeof error.response.data === 'object' ? JSON.stringify(error.response.data) : 'NaoVisto/HTML'}`;
+      } else {
+        debugInfo += ` | Não houve resposta do servidor`;
+      }
+      
+      toast.error(error.response?.data?.error ? error.response.data.error : `Erro [DEBUG]: ${debugInfo}`, { autoClose: 10000 });
+      console.error("DEBUG DETALHADO:", error, error.response);
     } finally {
       setLoading(false);
     }
