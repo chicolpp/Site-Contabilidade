@@ -197,10 +197,96 @@
   gap: 1rem;
 }
 
-/* Custom Select & Admin Toggle */
-.custom-select, .admin-toggle-premium {
+/* Custom Select Premium */
+.custom-select-container {
+  position: relative;
+  width: 100%;
+}
+
+.custom-select {
   background: rgba(15, 23, 42, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 1rem 1.2rem;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.custom-select:hover {
+  background: rgba(15, 23, 42, 0.6);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.custom-select.open {
+  border-color: var(--primary-light);
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+.custom-select-arrow {
+  font-size: 0.8rem;
+  transition: transform 0.3s ease;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.custom-select-arrow.open {
+  transform: rotate(180deg);
+  color: var(--primary-light);
+}
+
+.custom-select-options {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  right: 0;
+  background: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  overflow: hidden;
+  display: none;
+  backdrop-filter: blur(20px);
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.custom-select-options.open {
+  display: block;
+}
+
+.custom-select-option {
+  padding: 1rem 1.2rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: rgba(255, 255, 255, 0.8);
+  border-left: 3px solid transparent;
+}
+
+.custom-select-option:hover {
+  background: rgba(56, 189, 248, 0.1);
+  color: var(--primary-light);
+  border-left-color: var(--primary-light);
+}
+
+.custom-select-option.selected {
+  background: rgba(56, 189, 248, 0.15);
+  color: var(--primary-light);
+  font-weight: 600;
+  border-left-color: var(--primary-light);
+}
+
+.admin-toggle-premium {
+  background: rgba(245, 158, 11, 0.03);
+  border: 1px solid rgba(245, 158, 11, 0.15);
   padding: 1rem 1.2rem;
   border-radius: 12px;
   display: flex;
